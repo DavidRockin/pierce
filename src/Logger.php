@@ -1,17 +1,15 @@
 <?php
 
 namespace Pierce;
-use Noair\Noair,
-    Noair\Listener,
-    Noair\Event;
+use Noair\Event;
 
-class Logger extends Listener
+class Logger extends \Noair\Listener
 {
     private $logger;
 
     public function __construct(\Monolog\Logger $logger)
     {
-        $this->handlers[] = ['all', [$this, 'log'], Noair::PRIORITY_URGENT, true];
+        $this->handlers[] = ['all', [$this, 'log'], \Noair\Noair::PRIORITY_URGENT, true];
         $this->logger = $logger;
     }
 

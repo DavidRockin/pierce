@@ -1,12 +1,11 @@
 <?php
 
 namespace Pierce;
-use Noair\Listener,
-    Noair\Event,
-    Pierce\Event as PEvent,
+use Noair\Event,
+    Pierce\Event\RawSendEvent,
     Pierce\Connection\Message;
 
-class Connection extends Listener
+class Connection extends \Noair\Listener
 {
     private $name;
     private $type;
@@ -17,7 +16,7 @@ class Connection extends Listener
     private $realname = '';
     private $password = '';
     private $perform = [];
-    private $motd;
+    private $motd = [];
     private $usermode;
     private $channels = [];
     private $users = [];
@@ -236,7 +235,7 @@ class Connection extends Listener
 
     private function rawSend($msg, $priority = Message::NORMAL)
     {
-        $this->noair->publish(new PEvent\RawSendEvent([
+        $this->noair->publish(new RawSendEvent([
             'message' => $msg,
             'priority' => $priority,
         ], $this));
@@ -273,7 +272,7 @@ class Connection extends Listener
         return $this->onConnect($e);
     }
 
-    public function onRawSend(PEvent\RawSendEvent $rse)
+    public function onRawSend(RawSendEvent $rse)
     {
         if ($rse->data['connection'] != $this->name):
             return;

@@ -4,7 +4,11 @@ namespace Pierce;
 use Noair\Event,
     Noair\Listener;
 
+<<<<<<< HEAD
 class Client extends Listener
+=======
+class Client extends \Noair\Listener
+>>>>>>> remotes/upstream/master
 {
     private $connections = [];
     private $bots        = [];
