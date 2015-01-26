@@ -10,10 +10,14 @@ class Client extends Listener
 class Client extends \Noair\Listener
 >>>>>>> remotes/upstream/master
 {
+    const CONNECTNOW = true;
+    const CONNECTLATER = false;
+
     private $connections = [];
     private $bots        = [];
     private $interrupt   = false;
     private $pollrate    = 10; // in Hz
+    private $rxtimeout   = 300;
 
     private $nick;
     private $username;
@@ -39,13 +43,16 @@ class Client extends \Noair\Listener
     {
         switch ($name):
             case 'nick':
+                // intentional fallthrough
             case 'username':
                 $val = str_replace(' ', '', $val);
+                // intentional fallthrough
             case 'realname':
                 if ($this->$name && $this->$name != $val):
                     $this->noair->publish(new Event('clientPropertyChange', [$name, $val], $this));
                     $this->$name = $val;
                 endif;
+                // intentional fallthrough
             case 'connections':
                 break;
 
@@ -54,7 +61,7 @@ class Client extends \Noair\Listener
         endswitch;
     }
 
-    public function addConnection(Connection $conn, $connectnow = false)
+    public function addConnection(Connection $conn, $connectnow = self::CONNECTLATER)
     {
         // install default values if they're not already set
         foreach (['nick', 'username', 'realname'] as $prop):
@@ -65,7 +72,7 @@ class Client extends \Noair\Listener
 
         $this->connections[$conn->name] = $conn;
 
-        if ($connectnow):
+        if ($connectnow == self::CONNECTNOW):
             $this->noair->publish(new Event('connect', $conn->name, $this));
         endif;
 

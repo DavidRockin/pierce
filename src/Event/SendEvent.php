@@ -4,9 +4,9 @@ namespace Pierce\Event;
 use Pierce\Connection,
     Pierce\Exception as PException;
 
-class RawSendEvent extends \Noair\Event
+class SendEvent extends \Noair\Event
 {
-    public function __construct($data, $caller)
+    public function __construct($cmd, $data, $caller)
     {
         if (is_array($data)
             && isset($data['message']) && is_string($data['message'])
@@ -15,9 +15,9 @@ class RawSendEvent extends \Noair\Event
                 || ($caller instanceof Connection && $data['connection'] = $caller->name)
             )
         ):
-            parent::__construct('rawSend', $data, $caller);
+            parent::__construct('send' . ucfirst(strtolower($cmd)), $data, $caller);
         else:
-            throw new PException($caller->noair, 'Invalid RawSendEvent data');
+            throw new PException($caller->noair, 'Invalid SendEvent data');
         endif;
     }
 }
